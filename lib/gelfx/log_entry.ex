@@ -34,6 +34,7 @@ defmodule Gelfx.LogEntry do
         hostname,
         utc?
       ) do
+    IO.puts("metadata: #{inspect(metadata)}")
     metadata = Keyword.merge(metadata, additional_metadata)
 
     full_message =
@@ -96,6 +97,9 @@ defmodule Gelfx.LogEntry do
             Atom.to_string(value)
 
           is_pid(value) ->
+            inspect(value)
+
+          is_list(value) ->
             inspect(value)
 
           true ->

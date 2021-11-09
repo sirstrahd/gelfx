@@ -21,7 +21,7 @@ defmodule Gelfx.LogEntryTest do
     setup context do
       args = [
         format: {TestFormatter, :format},
-        metadata: [meta: "test", pid: :erlang.list_to_pid('<0.450.0>')],
+        metadata: [meta: "test", pid: :erlang.list_to_pid('<0.450.0>'), domain: [:elixir]],
         hostname: "test.local",
         utc_log: true
       ]
@@ -46,6 +46,7 @@ defmodule Gelfx.LogEntryTest do
       assert entry["_email"] == "email@test.local"
       assert entry["_meta"] == "test"
       assert entry["_pid"] == "#PID<0.450.0>"
+      assert entry["_domain"] == "[:elixir]"
     end
 
     # TODO: check the mf-tuple on runtime and fall back to the default message format
