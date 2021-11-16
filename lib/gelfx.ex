@@ -35,6 +35,7 @@ defmodule Gelfx do
   - `:hostname` - used as source field in the GELF message, defaults to the hostname returned by `:inet.gethostname()`
   - `:json_library` - json library to use, has to implement a `encode/1` which returns a `{:ok, json}` tuple in case of success
   - `:utc_log` - this option should not be configured directly. But rather by setting the `:utc_log` option in the `Logger` config. Should the Logger config change after the Gelfx backend is initialized the option has to be reconfigured.
+  - `:metadata_to_send` - list of metadata entries to send to GELF
 
   ### HTTP
   When using the HTTP protocol the url is build using the scheme defined in the graylog [documentation](https://docs.graylog.org/en/3.1/pages/sending_data.html#gelf-via-http).
@@ -51,7 +52,7 @@ defmodule Gelfx do
   Key collisions are __NOT__ prevented by Gelfx, additionally the keys `id` and `_id` are automatically omitted due to the GELF specification.
 
   ## Custom formatting
-  You can use your own log formatter in the same way you would define one for the Elixir default Logger.  
+  You can use your own log formatter in the same way you would define one for the Elixir default Logger.
   More information can be found [here](https://hexdocs.pm/logger/Logger.html#module-custom-formatting) in the Logger documentation.
 
   ```elixir
@@ -109,7 +110,8 @@ defmodule Gelfx do
     :metadata,
     :port,
     :protocol,
-    :utc_log
+    :utc_log,
+    :metadata_to_send
   ]
 
   @default_conf [
@@ -119,7 +121,8 @@ defmodule Gelfx do
     json_library: Jason,
     metadata: [],
     port: 12201,
-    protocol: :udp
+    protocol: :udp,
+    metadata_to_send: []
   ]
 
   # 2 magic bytes + 8 Msg ID + 1 seq number + 1 seq count
@@ -161,7 +164,8 @@ defmodule Gelfx do
         metadata: Keyword.get(config, :metadata),
         port: Keyword.get(config, :port),
         protocol: Keyword.get(config, :protocol),
-        utc_log: Keyword.get(config, :utc_log)
+        utc_log: Keyword.get(config, :utc_log),
+        metadata_to_send: Keyword.get(config, :metadata_to_send)
     }
 
     case :ets.info(__MODULE__, :size) do

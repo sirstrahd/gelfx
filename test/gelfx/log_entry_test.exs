@@ -23,7 +23,8 @@ defmodule Gelfx.LogEntryTest do
         format: {TestFormatter, :format},
         metadata: [meta: "test", pid: :erlang.list_to_pid('<0.450.0>'), domain: [:elixir]],
         hostname: "test.local",
-        utc_log: true
+        utc_log: true,
+        metadata_to_send: [:email, :meta, :pid, :domain]
       ]
 
       {:ok, gelfx} = Gelfx.init({Gelfx, args})

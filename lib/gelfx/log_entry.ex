@@ -22,9 +22,10 @@ defmodule Gelfx.LogEntry do
         format: format,
         metadata: metadata,
         hostname: hostname,
-        utc_log: utc?
+        utc_log: utc?,
+        metadata_to_send: metadata_to_send
       }) do
-    from_event(event, format, metadata, hostname, utc?)
+    from_event(event, format, metadata, hostname, utc?, metadata_to_send)
   end
 
   def from_event(
@@ -32,10 +33,10 @@ defmodule Gelfx.LogEntry do
         format,
         additional_metadata,
         hostname,
-        utc?
+        utc?,
+        metadata_to_send
       ) do
-    IO.puts("metadata: #{inspect(metadata)}")
-    metadata = Keyword.merge(metadata, additional_metadata)
+    metadata = metadata |> Keyword.take(metadata_to_send) |> Keyword.merge(additional_metadata)
 
     full_message =
       format
